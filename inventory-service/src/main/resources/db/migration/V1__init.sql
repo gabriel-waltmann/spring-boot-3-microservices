@@ -1,0 +1,5 @@
+CREATE TABLE IF NOT EXISTS inventories (
+    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+    sku_code VARCHAR(255),
+    quantity INT(11)
+)
