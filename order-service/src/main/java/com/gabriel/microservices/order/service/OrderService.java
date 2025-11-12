@@ -1,5 +1,6 @@
 package com.gabriel.microservices.order.service;
 
+import com.gabriel.microservices.order.client.InventoryClient;
 import com.gabriel.microservices.order.dto.OrderRequest;
 import com.gabriel.microservices.order.model.Order;
 import com.gabriel.microservices.order.repository.OrderRepository;
@@ -14,8 +15,15 @@ import java.util.UUID;
 @Slf4j
 public class OrderService {
     private final OrderRepository orderRepository;
+    private final InventoryClient inventoryClient;
 
     public void placeOrder(OrderRequest orderRequest) {
+        var productIsInStock = inventoryClient.isInStock(orderRequest.skuCode(), orderRequest.quantity());
+
+        if (!productIsInStock) {
+            throw new RuntimeException("Product with SKU code " + orderRequest.skuCode() + " is not in stock.");
+        }
+
         // Create Order entity from OrderRequest
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
